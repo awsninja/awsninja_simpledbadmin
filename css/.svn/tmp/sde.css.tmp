@@ -1,0 +1,52 @@
+body {
+	font-size: 10px;
+	font-face: verdana;
+}
+
+
+li.domain {
+		list-style: none;
+}
+li.domain:hover {
+	//background-color: red;
+
+	
+	
+}
+
+a:hover {
+	background-color: red;
+	
+}
+
+#seDomainExplorer {
+	float: left;
+	width: auto;
+
+}
+
+#seItemList {
+	float: left;
+}
+
+#nextBtn {
+	display: none;
+}
+
+.current-domain {
+		background-color: #FFFF00;
+	
+}
+
+
+thead {
+	background-color: #DBC3C8;
+	font-weight: bold;
+	
+}
+
+tr {
+	background-color: #FAF4B6;
+	
+}
+

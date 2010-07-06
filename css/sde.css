@@ -1,0 +1,72 @@
+body {
+	font-size: 60%;
+	font-face: verdana;
+}
+
+input {
+	width: 360px;
+}
+
+h4 {
+	cursor: pointer;
+}
+
+li.domain {
+		list-style: none;
+}
+li.domain:hover {
+	//background-color: red;
+
+	
+	
+}
+
+a:hover {
+	background-color: red;
+	
+}
+
+#se {
+	width: 100%;
+	float: left;
+	margin: auto;
+	text-align: left;
+}
+#seDomainList {
+	float: left;
+
+}
+
+#seItemList {
+overflow:hidden;
+}
+
+#nextBtn {
+	display: none;
+}
+
+.current-domain {
+		background-color: #FFFF00;
+	
+}
+
+
+thead {
+	background-color: #DBC3C8;
+	font-weight: bold;
+	
+}
+
+tr {
+	background-color: #FAF4B6;
+}
+tr.hovered {
+	background-color: #EDDDC7;
+	cursor: pointer;
+	
+}
+
+.ui-dialog-content {
+	background-color: #FAF4B6;
+}
+

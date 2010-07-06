@@ -1,0 +1,89 @@
+
+var DomainList = function(id) {
+	this.init(id);
+};
+
+DomainList.prototype = {
+	Id: null,
+	jB: null,
+	
+	domainCt: 0,
+	
+	init: function(id) {
+		this.Id = id;
+		this.jB = $('#' + id);
+		$('#' + this.Id + 'Add').bind('click', {
+			sender: this
+		}, this.addDomain);
+		var that = this;
+		$.ListDomains().bind('ListDomainsResponseReceived', function(a,o) {
+			var domains = o.AWSResponse.ListDomainsResponse.ListDomainsResult.DomainName;
+			for (var key in domains) {
+				that._appendDomain( domains[key], that);
+			}
+		});
+	},
+	
+	_appendDomain: function(domainName, sender) {
+		var that;
+		if (sender) {
+			that = sender;
+		}
+		else {
+			that = this;
+		}
+		var id = 'domain_' + this.domainCt;
+		this.domainCt++;
+		$('#' + this.Id + "List").append('<li><a  id="' + id + '" class="Domain" href="#">' + domainName + '</a></li>');
+		$('#' + this.Id + "List").contextMenu('domainMenu', {bindings: {
+			domainDelete: function(o) {
+				var domainName = o.firstChild.firstChild.nodeValue;
+				that.deleteDomain(domainName, o.firstChild);
+			},
+			domainEmpty: function() {
+				alert('domainEmpty');
+			}
+		}});
+		$('#' + this.Id + "List").bind('click',{sender: that}, this.changeDomain);
+		
+	},
+
+	changeDomain: function(eventObj) {
+		var that;
+		if (eventObj.data.sender) {
+			$(eventObj.target).addClass('current-domain');
+			that = eventObj.data.sender;
+		}
+		else {
+			that = this;
+		}
+		var targ = eventObj.target;
+		var newDomainName = targ.firstChild.nodeValue;
+		$(that).trigger('DomainChanged', {NewDomainName: newDomainName});
+	},
+	
+	deleteDomain: function(domainName, sender) {
+		var confirmed = confirm('DON\'T DO IT MAN!  Are you sure you want to delete Domain ' + domainName + '?');
+		if (D){
+			$.DeleteDomain(domainName).bind('DeleteDomainResponseReceived', function(a,o) {
+				sender.innerHTML = '';
+			});
+		}
+	},
+	
+	addDomain: function(eventObj) {
+		var that;
+		if (eventObj.data.sender) {
+			that = eventObj.data.sender;
+		}
+		else {
+			that = this;
+		}
+		var newDomainName = prompt("Enter the name for your new Domain.");
+		$.CreateDomain(newDomainName).bind('CreateDomainResponseReceived', function(a,o) {
+			that._appendDomain(newDomainName, that);
+		});
+		return false;
+	}
+	
+};

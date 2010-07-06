@@ -1,0 +1,16 @@
+$(document).ready(function() {
+
+	var d = new DomainList('seDomainExplorer');
+	var l = new ItemList('seItemList');
+	
+//	alert($.dump(d.jB));
+	
+	
+	
+	
+	
+	$(d).bind('DomainChanged', function(eventObj, data){
+		l.getItems(data.NewDomainName);
+	});
+//	alert('bla');
+});

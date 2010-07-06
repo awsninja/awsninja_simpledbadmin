@@ -1,0 +1,191 @@
+/*
+ * jQuery utility functions for interfacing with SimpleDb
+ * 
+ */
+
+
+(function($){
+
+	//Properties 
+	$.sdbAccessKey = 'AKIAJH4RG7FPDSW27VNA';
+	$.sdbSecKey = 'xMTnypokWGJeh+mjfaYr4piQCYjSR3Eq4vMB4wd3';
+	$.sdbVersion = '2009-04-15';
+	$.sdbSignatureVersion = '2';
+	$.sdbSignatureMethod = 'HmacSHA256';
+	$.sdbeURI = 	'sdbeditor.docmonk.com';
+	$.sdbURI = 		'sdb.amazonaws.com';
+	//Methods
+
+	$.ListDomains = function(maxNumberOfDomains, nextToken)  {
+		var params = {
+			Action: 'ListDomains'
+		};
+		if (maxNumberOfDomains) {
+			params.MaxNumberOfDomains = maxNumberOfDomains;
+		}
+		else {
+			params.MaxNumberOfDomains = 20;
+		}
+		if (nextToken) {
+			params.NextToken = nextToken;
+		}
+		return this._executeQuery('POST', params);
+	};
+	
+	$.CreateDomain = function(domainName) {
+		var params = {
+			Action: 'CreateDomain',
+			DomainName: domainName
+		};
+		return this._executeQuery('POST', params);
+	};
+	
+	$.DeleteDomain = function(domainName) {
+		var params = {
+			Action: 'DeleteDomain',
+			DomainName: domainName
+		};
+		return this._executeQuery('POST', params);
+	};
+	
+	$.Select = function(selectExpression, consistantRead, nextToken) {
+		var params = {
+			Action: 'Select'
+		};
+		if (consistantRead === false) {
+			params.ConsistantRead = 'false'
+		}
+		else {
+			params.ConsistantRead = 'true'
+		}
+		
+		
+		params.SelectExpression = selectExpression;
+
+
+		if (consistantRead === false) {
+			params.ConsistantRead = 'false'
+		}
+		else {
+			params.ConsistantRead = 'true'
+		}
+		if (nextToken) {
+			params.NextToken = nextToken
+		}
+		
+		return this._executeQuery('POST', params);
+	};
+	
+	$.DeleteAttributes = function (domainName, itemName) {
+		var params = {
+			Action: 'DeleteAttributes',
+			DomainName: domainName,
+			ItemName: itemName
+		}
+		return this._executeQuery('POST', params);
+	};
+	
+	$._getUniqueId = function() {
+		var newDate = new Date();
+    	return newDate.getTime();
+	};
+	
+	$._executeQuery = function(method, params) {
+
+		//build the query without the signature or timestamp
+		var p = params;
+		p.AWSAccessKeyId = this.sdbAccessKey;
+		p.Version = this.sdbVersion;
+		p.SignatureVersion = this.sdbSignatureVersion;
+		p.SignatureMethod = this.sdbSignatureMethod;
+		
+		var oSign = this._getSignatureFromArray(method, this.sdbURI + '/', p, this.sdbSecKey );
+		p.Signature = oSign.Signature;
+		p.Timestamp = oSign.Timestamp;
+		var responseObj = {}
+		$.ajax({
+			url: '/relay.php',
+			context: this,
+			success: function(data) {
+				$(responseObj).trigger(params.Action + 'ResponseReceived', {AWSResponse: data});
+			},
+			complete: function (req, status) {
+			},
+			dataType: 'json',
+			type: method,
+			data: p
+		});
+		return $(responseObj);
+
+	};
+	
+//	$._parseAWSXMLResponse = function(cmd, xml) {
+//		
+//		var dom = $(xml).children();
+//		if (dom[0].nodeName === 'Response' && dom[0][0].nodeName === 'Errors')
+//		{
+//			//we got errors
+//			var res = [];
+//			var errors = dom[0][0];
+//			for(var err in errors)
+//			{
+//				res.push({Code: err.Code, Message: err.Message});
+//			}
+//			return {Result: Failure, Errors: res};
+//		}
+//				
+//		//otherwise, do we have the response we're looking for?
+//		if (dom[0].nodeName === cmd + 'Response')
+//		{
+//			var root = dom;
+//			
+//		}
+//		
+//
+//		return {Result: Success, Data: data};
+//		
+////		alert($.dump($(xml).children()));
+//		
+//		
+//	};
+//	
+	$._getSignatureFromArray = function(method, URI, params, secretKey) {
+			return AWSQS.getSignatureFromArray('POST', URI, params, secretKey); //POST because we don't want anything URL encoded yets
+	};
+	
+//	$._getSignature = function(method, strQry, secretKey) {
+//		return AWSQS.getSignature(method, strQry, secretKey)
+//	};
+	
+	
+//	$._getStructFromXML = function(xml) {
+//		var results = {};
+//		$._walktheDom(xml, function(res) {
+//			
+//		});
+//		
+//	
+//	}
+	
+//	$._walkTheDom = function(node, func) {
+//		func(node);
+//		node = node.firstChild;
+//		while(node){
+//			$._walkTheDom(node, func);
+//			node = node.nextSibling
+//		}
+//	};
+	
+	
+	$._urlencode = function(str) {
+	    // URL-encodes string  
+	    // version: 911.718
+	    // discuss at: http://phpjs.org/functions/urlencode
+	   	str = (str+'').toString();
+	   
+	    // Tilde should be allowed unescaped in future versions of PHP (as reflected below), but if you want to reflect current
+	    // PHP behavior, you would need to add ".replace(/~/g, '%7E');" to the following.
+	    return encodeURIComponent(str).replace(/!/g, '%21').replace(/'/g, '%27').replace(/\(/g, '%28').replace(/\)/g, '%29').replace(/\*/g, '%2A').replace(/%20/g, '+');
+	};
+	
+})(jQuery);

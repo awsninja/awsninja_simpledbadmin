@@ -1,0 +1,204 @@
+
+
+//Array.prototype.getUnique = function(){
+// var u = {}, a = [];
+// for(var i = 0, l = this.length; i < l; ++i){
+//    if (this[i] in u) {
+//			continue;
+//		}
+//    a.push(this[i]);
+//    u[this[i]] = 1;
+// }
+// return a;
+//}
+
+var ItemList = function(id) {
+	this.init(id);
+};
+
+ItemList.prototype = {
+	Id: null,
+	jB: null,
+	maxRows: 10,
+
+	nextToken: null,
+	currentDomainName: null,
+
+	init: function(id){
+		var that = this;
+  	this.Id = id;
+  	this.jB = $('#' + id);
+		$('#nextBtn').click(function() {
+				that.getItems(that.currentDomainName, that.nextToken);
+		});
+		
+		
+		$('#addBtn').bind('click', function() {
+				$("#dialog").dialog();
+//				$('#addBtn').lightBox({
+//					overlayBgColor: '#FFF',
+//					overlayOpacity: 0.6,
+//					imageLoading: '/images/lightbox-ico-loading.gif',
+//					imageBtnClose: '/images/lightbox-btn-close.gif',
+//					imageBtnPrev: '/images/lightbox-btn-prev.gif',
+//					imageBtnNext: '/images/lightbox-btn-next.gif',
+//					containerResizeSpeed: 350,
+//					txtImage: 'Imagem',
+//					txtOf: 'de'
+//				});
+		});
+  },
+	
+	getItems: function(domainName, nextToken) {
+		this.currentDomainName = domainName;
+		var that = this;
+		var qry = this._buildQuery(domainName);		
+		$.Select(qry).bind('SelectResponseReceived', function(a,o) {
+			var resObj = that._parseSelectResults(o.AWSResponse.SelectResponse.SelectResult);
+		//	alert($.dump(resObj));
+			that._buildItemTable(resObj)
+			if (o.AWSResponse.SelectResponse.SelectResult.NextToken)	{
+				that.nextToken = o.AWSResponse.SelectResponse.SelectResult.NextToken;
+				$('#nextBtn').css('display', 'block');
+			}
+		});
+	},
+	
+	deleteAttributes: function(domainName, itemName) {
+		$.DeleteAttributes(domainName, itemName).bind('DeleteAttributesReceived', function(a,o) {
+			alert('Deleted');
+		});
+	},
+	
+	_buildItemTable: function(objStruct) {
+		var that = this;
+		$('#seItemListGrid').empty();
+		var keys = objStruct.keys;
+		var keyCt = keys.length;
+		var headRow = '<tr><td>ItemName</td>';
+		
+		for(var i=0; i<keyCt; i++){
+			headRow += '<td>' + keys[i] + '</td>';
+		}
+		headRow += '</tr>'
+		
+		var items = objStruct.rows;
+		
+		var body = '';
+		for(var itemName in items) {
+			var item = items[itemName];
+			body += '<tr><td class="itemName">' + itemName + '</td>';
+			for (i=0; i<keyCt; i++) {
+				var key = keys[i];
+				if (item[key]) {
+					var attr = item[key];
+					var mult = false;
+	
+					body += '<td>';
+					if (attr.length > 1) {
+						mult = true;
+						body += '[';
+					}
+					for (var j=0; j< attr.length; j++) {
+						body += attr[j];
+						if (mult && j === attr.length-1) {
+							body += ',';
+						}
+					}
+					if (attr.length > 1) {
+						body += ']';
+					}
+					body += '</td>';
+					}
+			}
+			body += '</tr>';
+		}		
+		var table = $('<table><thead>' + headRow + '</thead><tbody>' + body + '</tbody></table>');
+		$('#seItemListGrid').append(table);
+		table.find('.itemName').bind('click', function(e) {
+			var targ = $(e.target);
+			var itemId = targ.text();
+			var response = prompt('Type YES to DELETE this row.');
+			if (response) {
+		  	if (response.toLowerCase() === 'yes') {
+		  		that.deleteAttributes(that.currentDomainName, itemId);
+		  	}
+		  }
+		});
+	},
+	
+	_parseSelectResults: function(o){
+		//alert($.dump(o));
+		var keys = this._getFieldKeys(o);
+		//alert($.dump(keys));
+		var objects = {};
+	//	alert($.dump(o.Item));
+		
+		var itemCol;
+		if (!o.Item.length) {
+			itemCol = [o.Item]; // this is needed if there is only one item
+		}
+		else {
+			itemCol = o.Item;
+		}
+		
+		for (var i in itemCol) {
+			var itm = itemCol[i];
+			var r = {};
+			var rowName = itm.Name
+			for (var m in itm.Attribute) {
+				var attr = itm.Attribute[m];
+				if (!r[attr.Name]) {
+					r[attr.Name] = [];
+				};
+				r[attr.Name].push(attr.Value);
+			}
+			objects[rowName] = r;
+		}
+		var res = {
+			keys: keys,
+			rows: objects
+		};
+		return res;
+	},
+	
+	_getFieldKeys: function(o) {
+		var all = [];
+		if (o.Item.length) {
+			for (var i in o.Item) {
+				var obj = o.Item[i]
+				for (var j in obj.Attribute) {
+					var att = obj.Attribute[j];
+					all.push(att.Name);
+				}
+			}
+		}
+		else { //this works in the case where there is only one row
+			for (var id in o.Item.Attribute) {
+			//	alert(o.Item.Attribute[id].Name);
+				all.push(o.Item.Attribute[id].Name);
+			}
+		}
+		return this._getUniqueArrayValues(all);
+	},
+	
+	_buildQuery: function(domainName) {
+		return 'SELECT * FROM ' + domainName + '  LIMIT ' + this.maxRows;
+	},
+	
+	_getUniqueArrayValues: function(ary) {
+	 var u = {}, a = [];
+	 for(var i = 0, l = ary.length; i < l; ++i){
+	    if (ary[i] in u) {
+				continue;
+			}
+	    a.push(ary[i]);
+	    u[ary[i]] = 1;
+	 }
+	 return a;
+	}
+	
+	
+	
+	
+};

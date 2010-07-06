@@ -1,0 +1,67 @@
+<html>
+	<head>
+		<title>SDbEditor</title>
+		
+		<link rel="stylesheet" type="text/css" href="/css/sde.css" />
+		<link rel="stylesheet" type="text/css" href="/css/jquerythemes/ui-lightness/jquery-ui-1.8.2.custom.css" />
+	
+	</head>	
+	
+<body>
+SDBEditor
+<div id="se">
+	
+
+</div>
+
+<pre id="debug">
+	
+	
+</pre>
+
+<div id="dialog" style="display:none;">
+	Hello World!
+</div>
+
+<div id="attrDialog" style="display:none;">
+	<table><tbody>
+		<tr><td>Name:</td><td><input type="text" name="newAttName"></td></tr>
+		<tr><td>Value:</td><td><input type="text" name="newAttValue"></td></tr>
+	</tbody></table>
+</div>
+
+
+<div class="contextMenu" id="domainMenu">
+	<ul>
+		<li id="domainDelete">Delete</li>
+		<li id="domainEmpty">Empty</li>
+	</ul>
+</div>
+<script>
+
+</script>
+
+
+<script src="/javascript/jquery/jquery-1.4.2.js" ></script>
+<script src="/javascript/jquery/jquery-ui-1.8.2.custom.min.js" ></script>
+
+
+<script src="/javascript/jquery/jquery.dump.js" ></script>
+<script src="/javascript/jquery/jquery.contextmenu.js" ></script>
+
+<script src="/javascript/sig/jssha256.js" ></script>
+<script src="/javascript/sig/ecmanaut.base64.js" ></script>
+<script src="/javascript/sig/AWSQuerySigner.js" ></script>
+
+<script src="/javascript/jSimpleDb.js" ></script>
+<script src="/javascript/DomainList.js" ></script>
+<script src="/javascript/ItemList.js" ></script>
+
+<script src="/javascript/SDBAdmin.js" ></script>
+<script>
+//	alert('at the end');
+	
+</script>
+
+</body>
+</html>

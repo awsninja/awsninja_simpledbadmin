@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/repos/!svn/ver/122/PDFTO/trunk/sdbeditor/javascript/sig
+END
+jssha256.js
+K 25
+svn:wc:ra_dav:version-url
+V 67
+/repos/!svn/ver/69/PDFTO/trunk/sdbeditor/javascript/sig/jssha256.js
+END
+AWSQuerySigner.js
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repos/!svn/ver/122/PDFTO/trunk/sdbeditor/javascript/sig/AWSQuerySigner.js
+END
+ecmanaut.base64.js
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/repos/!svn/ver/69/PDFTO/trunk/sdbeditor/javascript/sig/ecmanaut.base64.js
+END
