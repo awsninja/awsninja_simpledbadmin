@@ -34,7 +34,7 @@
 
 
 
-define('NINJA_BASEPATH', dirname(__FILE__) . '/../');
+define('NINJA_BASEPATH', dirname(__FILE__) . './../');
 
 //params.php holds the definitions of the SimpleDb API operations
 require_once(NINJA_BASEPATH . 'awsninja_simpledbadmin/params.php');

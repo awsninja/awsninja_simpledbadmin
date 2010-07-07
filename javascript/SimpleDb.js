@@ -203,7 +203,7 @@
 			p.Timestamp = oSign.Timestamp;
 
 			$.ajax({
-				url: '/relay.php',
+				url: './relay.php',
 				context: $.NinjaSDB,
 				success: function(data){
 					$(responseObj).trigger(params.Action + 'ResponseReceived', {
