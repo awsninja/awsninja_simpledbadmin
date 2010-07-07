@@ -1,3 +1,37 @@
+/**
+ * SimpleDbAdmin - DomainList.php
+ * 
+ * Displays and allows manipulation of AWS SimpleDb domain contents.
+ * 
+ * Implemented as a JQuery plug-in.  Requires JQuery.
+ * 
+ * @author Jay Muntz
+ * 
+ * Copyright 2010 Jay Muntz (http://www.awsninja.com)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * “Software”), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ *
+ */
+
+
 (function($) {
 	
 	if (!$.NinjaSDB) {
@@ -19,7 +53,6 @@
 		};
 
 		base._appendDomain = function(domainName) {
-			//$('#' + base.el.id + "List").empty();
 			var id = base.el.id + 'domain_' + this.domainCt;
 			base.domainCt++;
 			$('#' + base.el.id + "List").append('<li id="domain-' + domainName + '"><a  id="' + id + '" class="Domain" href="#">' + domainName + '</a></li>');
@@ -27,9 +60,6 @@
 				domainDelete: function(o) {
 					var domainName = o.firstChild.nodeValue;
 					base._deleteDomain(domainName);
-				},
-				domainEmpty: function() {
-					alert('domainEmpty');
 				}
 			}});
 		};
@@ -74,8 +104,6 @@
 		};
 		base.init();
 	};
-
-
 
 	
 	$.NinjaSDB.DomainList.defaultOptions = {};
