@@ -47,8 +47,15 @@
 		
 		base.populateDomainList = function(domainsAry) {
 			$('#' + base.el.id + "List").empty();
-			for (var i=0;i<domainsAry.length; i++){
-				base._appendDomain(domainsAry[i]);
+			
+			if (domainsAry.constructor.toString().indexOf('Array') == -1) {
+				//There is only one domain  "domainsAry" is a string
+				base._appendDomain(domainsAry);
+			}
+			else {
+				for (var i=0;i<domainsAry.length; i++){
+					base._appendDomain(domainsAry[i]);
+				}
 			}
 		};
 
