@@ -11,7 +11,7 @@
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
- * “Software”), to deal in the Software without restriction, including
+ * "Software"), to deal in the Software without restriction, including
  * without limitation the rights to use, copy, modify, merge, publish,
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
@@ -20,7 +20,7 @@
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND,
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
@@ -330,6 +330,7 @@
 			$('#' +	base.el.id + 'Tbody').empty();
 			var keys = objStruct.keys;
 			var keyCt = keys.length;
+			
 			var headRow = '<tr><td>ItemName</td>';
 			
 			for(var i=0; i<keyCt; i++){
@@ -393,11 +394,23 @@
 					for (var i in o.Item) {
 						if (o.Item.hasOwnProperty(i)) {
 							var obj = o.Item[i];
-							for (var j in obj.Attribute) {
-								if (obj.Attribute.hasOwnProperty(j)) {
-									var att = obj.Attribute[j];
-									if (att.Name) {
-										all.push(att.Name);
+							var ct=0;
+							for (var k in obj) {
+								if (obj.hasOwnProperty(k)) {
+									ct++;
+								} 
+					    }
+							//if obj.Attribute contains 'Name' and 'Value' and attribute count is 2 - there is only one attribute
+							if(obj.Attribute.Name && obj.Attribute.Value && ct===2){
+								all.push(obj.Attribute.Name);
+							}
+							else {
+								for (var j in obj.Attribute) {
+									if (obj.Attribute.hasOwnProperty(j)) {
+										var att = obj.Attribute[j];
+										if (att.Name) {
+											all.push(att.Name);
+										}
 									}
 								}
 							}
@@ -416,7 +429,7 @@
 						all.push(o.Item.Attribute.Name);
 					}
 				}
-			}
+			}	
 			return base._getUniqueArrayValues(all);
 		};
 		
