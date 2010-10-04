@@ -106,7 +106,7 @@ class xml2json {
 	
 		$jsonOutput = EMPTY_STR;		
 		// Let us convert the XML structure into PHP array structure.
-		$array1 = xml2json::convertSimpleXmlElementObjectIntoArray($simpleXmlElementObject);
+		$array1 = xml2json::convertSimpleXmlElementObjectIntoArray('',$simpleXmlElementObject);
 		
 		if (($array1 != null) && (sizeof($array1) > 0)) {		
 			//create a new instance of Services_JSON
@@ -170,7 +170,7 @@ class xml2json {
 	June/01/2007  	
 	=============================================================================
 	*/		
-	public static function convertSimpleXmlElementObjectIntoArray($simpleXmlElementObject, &$recursionDepth=0) {		
+	public static function convertSimpleXmlElementObjectIntoArray($simpleXmlElementObjectName, $simpleXmlElementObject, &$recursionDepth=0) {	
 		// Keep an eye on how deeply we are involved in recursion.
 		if ($recursionDepth > MAX_RECURSION_DEPTH_ALLOWED) {
 			// Fatal error. Exit now.
@@ -180,7 +180,7 @@ class xml2json {
 		if ($recursionDepth == 0) {
 			if (!is_object($simpleXmlElementObject) || get_class($simpleXmlElementObject) != SIMPLE_XML_ELEMENT_PHP_CLASS) {
 				// If the external caller doesn't call this function initially  
-				// with a SimpleXMLElement object, return now.				
+				// with a SimpleXMLElement object, return now.		
 				return(null);				
 			} else {
 				// Store the original SimpleXmlElementObject sent by the caller.
@@ -221,7 +221,7 @@ class xml2json {
        			// Let us recursively process the current element we just visited.
 				// Increase the recursion depth by one.
 				$recursionDepth++;	       			
-           		$resultArray[$key] = xml2json::convertSimpleXmlElementObjectIntoArray($value, $recursionDepth);
+           		$resultArray[$key] = xml2json::convertSimpleXmlElementObjectIntoArray($key, $value, $recursionDepth);
            		// Decrease the recursion depth by one.
            		$recursionDepth--;
        		} // End of foreach($simpleXmlElementObject as $key=>$value) {		
@@ -233,8 +233,11 @@ class xml2json {
 				// recursive function.
 				$tempArray = $resultArray;
 				$resultArray = array();
-				$resultArray[$callerProvidedSimpleXmlElementObject->getName()] = $tempArray;
-       		}
+//				echo($simpleXmlElementObjectName);
+				$resultArray[$simpleXmlElementObjectName] = $tempArray;
+    
+//				$resultArray[$callerProvidedSimpleXmlElementObject->getName()] = $tempArray;
+      	}
        		
        		return ($resultArray);
    		} else {

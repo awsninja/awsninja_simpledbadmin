@@ -435,7 +435,16 @@
 		
 		
 		base._buildQuery = function(domainName) {
-			return 'SELECT * FROM ' + domainName + '	LIMIT ' + base.maxRows;
+			var qry;
+			if (domainName.indexOf('-') === -1 && domainName.indexOf('.') === -1 && isNaN(parseInt(domainName.substr(0,1))))
+			{
+				qry  = 'SELECT * FROM ' + domainName + '	LIMIT ' + base.maxRows;
+			}
+			else
+			{
+				qry = 'SELECT * FROM `' + domainName + '`	LIMIT ' + base.maxRows;
+			}
+			return qry;
 		};
 		
 		base.init = function(){

@@ -15,4 +15,4 @@ $sdbparams = array(
 		'GetAttributes'=>array('DomainName', 'ItemName', 'ConsistantRead'	),
 );
 
-?> 	
+?>

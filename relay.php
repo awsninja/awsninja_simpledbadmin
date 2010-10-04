@@ -34,6 +34,7 @@
 
 
 
+
 define('NINJA_BASEPATH', dirname(__FILE__) . './../');
 
 //params.php holds the definitions of the SimpleDb API operations
@@ -42,6 +43,9 @@ require_once(NINJA_BASEPATH . 'awsninja_simpledbadmin/params.php');
 //the xml2json.php package is used to translate the XML responses provided
 //by the SimpleDb API into JSON to be sent to the browser
 require_once(NINJA_BASEPATH . 'awsninja_simpledbadmin/xml2json.php');
+
+//For Systems that don't have json_encode() and json_decode();
+require_once(NINJA_BASEPATH . 'awsninja_simpledbadmin/jsonwrapper.php');
 
 //This collects the parameters that appear in every request
 $params = array(
@@ -109,7 +113,8 @@ $post .= "Content-Length: " . strlen($query) . "\r\n";
 $post .= "User-Agent: DocMonk\r\n";
 $post .= "\r\n";
 $post .= $query;
-
+//echo("##$query##");
+//exit;
 $response = '';
 
 if (isset($url['port']))
@@ -142,24 +147,23 @@ else
 
 //http://www.ibm.com/developerworks/xml/library/x-xml2jsonphp/
 //NINJA_BASEPATH . 'awsninja_simpledbadmin/xml2json.php
-$res = _transformXmlStringToJson($responseBody);
+$res = _transformXmlStringToJson($params['Action'], $responseBody);
 
 //echo the JSON to the browser.
 echo($res);
 
 
- function _transformXmlStringToJson($xmlStringContents) {
-    $simpleXmlElementObject = simplexml_load_string($xmlStringContents); 
+ function _transformXmlStringToJson($action, $xmlStringContents) {
 
-      if ($simpleXmlElementObject == null) {
+   $simpleXmlElementObject = simplexml_load_string($xmlStringContents); 
+   if ($simpleXmlElementObject === false) {
         return('');
     }
 
     $jsonOutput = ''; 
 
     // Let us convert the XML structure into PHP array structure.
-    $array1 = xml2json::convertSimpleXmlElementObjectIntoArray($simpleXmlElementObject);
-
+    $array1 = xml2json::convertSimpleXmlElementObjectIntoArray($action . 'Response', $simpleXmlElementObject);
 
     if (($array1 != null) && (sizeof($array1) > 0)) { 
         // Create a new instance of Services_JSON
@@ -173,7 +177,7 @@ echo($res);
 }
 
 
-function _getParametersAsString(array $parameters)
+function _getParametersAsString($parameters)
 {
     $queryParameters = array();
     foreach ($parameters as $key => $value)
